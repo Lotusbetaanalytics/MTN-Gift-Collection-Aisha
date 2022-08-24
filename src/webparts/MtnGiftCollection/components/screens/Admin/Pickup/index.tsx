@@ -93,6 +93,7 @@ console.log(query)
     setID(rowData.ID)
     sp.web.lists.getByTitle("GiftBeneficiaries").items.getById(Number(rowData.ID)).update({
         ApprovalStatus: "Approved",
+        CollectionStatus: "Pending"
     }).then((res) => {
         swal("Success", "Pick up approved successfully", "success");
       sp.web.lists

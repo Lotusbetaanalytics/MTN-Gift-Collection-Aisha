@@ -7,9 +7,8 @@ import "@pnp/sp/site-users/web";
 import { sp } from "@pnp/sp/presets/all";
 import Text from "../../../Containers/Text";
 import swal from "sweetalert";
-import { number } from "echarts";
 import Modal from "../../../Containers/Modal";
-import Spinner from "../../../Containers/Spinner";
+
 
 
 
@@ -34,7 +33,8 @@ const Document = () => {
   const [collectionStatus,setCollectionStatus] = React.useState("")
   const [loading,setLoading]=React.useState(false)
   const [proxyType,setProxyType] = React.useState("")
-
+  const [date,setDate] = React.useState("")
+  const [time,setTime] = React.useState("")
   const [ID,setID] = React.useState("")
   React.useEffect(() => {
     sp.profiles.myProperties.get().then((response) => {
@@ -44,6 +44,20 @@ const Document = () => {
   }, []);
 
   React.useEffect(() => {
+    let today = new Date();
+    let getYear = today.getFullYear();
+    let getToday =  today.getDate();
+    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+     setTime(time)
+    
+    let  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let d = new Date();
+    let monthName = months[d.getMonth()]; // "July" (or current month)
+    setDate(getToday + "-" + monthName + "-" + getYear)
+    console.log(getToday,monthName,getYear)
+    console.log("this is date",date)
+
+
     sp.profiles.myProperties.get().then((response) => {
       
       setEmployeeEmail(response.DisplayName);
@@ -65,11 +79,13 @@ const Document = () => {
                 setCollectionStatus(res[0].CollectionStatus)
                 
             })
-  }, [phone]);
+  }, [time,phone]);
 
   const openUpadate = () =>{
     setModal(true)
   }
+
+ 
   const updateHandler = () => {
     setLoading(true)
     sp.web.lists.getByTitle("GiftBeneficiaries").items.getById(Number(ID)).update({
@@ -77,9 +93,27 @@ const Document = () => {
         LocationChampionEmail : employeeEmail,
         CollectedBy : pickupPerson,
         ProxyType :proxyType
-
-    }).then((res) => {
+})
+sp.web.lists
+.getByTitle("Report")
+.items.add({
+    Phone:phone,
+    Surname: surname,
+    FirstName:FirstName,
+    JobTitle:jobTitle,
+    Email:Email,
+    Location:location,
+    PickupLocation:pickupLocation,
+    PickupPerson : pickupPerson,
+    Division:division,
+    Vendor:vendor,
+    CollectionStatus:"Collected",
+    Date:date,
+    Time:time,
+})
+.then((res) => {
       setLoading(false)
+      setModal(false)
         swal("Success", "Confirmation successfully", "success");
     }).catch((e) => {
         swal("Warning!", "An Error Occured, Try Again!", "error");
@@ -91,14 +125,20 @@ const handler = (e)=>{
   e.preventDefault()
  setPhone(e.target.value)
 }
+const backHandler =() =>{
+  history.push("/locationchampion/report")
+}
+console.log(date)
+console.log(time)
+
   return (
     <div className="appContainer">
       <Sidebar />
       <div className="contentsRight">
         <Header title={"Employees"} userEmail={employeeEmail} />
         <div className="spaceBetween">
-        <div><Search value={phone} onchange={handler} type={"tel"} placeholder={"Input phone number"} /></div>
-          <div> <button className="mtn__btn mtn__white">Report</button></div>
+        <div><Search value={phone} onchange={handler} type={"Tel"} placeholder={"Input phone number"} /></div>
+          <div> <button className="mtn__btn mtn__white" onClick={backHandler}>Report</button></div>
         </div>
         <div className={styles.header}><h3>Employee Details</h3></div>
         <div style={{display:"flex",flexDirection:"column" ,marginBottom:"2rem"}}>
@@ -112,11 +152,12 @@ const handler = (e)=>{
          <Text title={"Pickup Person"} value={pickupPerson} size={"medium"} />
          <Text title={"Division"} value={division} size={"medium"} />
          <Text title={"Vendor"} value={vendor} size={"medium"} />
-         <Text title={"Collection Status"} value={collectionStatus} size={"medium"} />
-
+         {collectionStatus === "Collected" ? <h4 style={{marginLeft:"1%",color:"rgba(0, 0, 0)",marginTop:"10px"}}> Gift Status : <span style={{backgroundColor:"green",color:"rgba(255, 255, 255, 1)",marginLeft:"15%",padding:"5px",borderRadius:"10px",fontWeight:"200"}}>{collectionStatus}</span></h4> : <Text title={"Gift Status"} value={collectionStatus} size={"medium"} /> }
+        
+        
           <div style={{width:"40%",display:"flex",flexDirection:"row",justifyContent:"space-between",marginTop:"2rem"}}> 
             <button onClick={openUpadate}
-             disabled={collectionStatus === "Collected" ? true : false }
+             disabled={collectionStatus === "Collected" || Email === " " ?  true : false }
             className="mtn__btn mtn__yellow"
             > Confirm Collector</button>
           </div>

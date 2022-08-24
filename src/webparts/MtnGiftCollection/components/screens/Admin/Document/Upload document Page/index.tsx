@@ -8,12 +8,12 @@ import { readFile, utils } from 'xlsx';
 // const XLSX = require("xlsx");
 
 
-const Document = () => {
+const Document = ({context}) => {
   const [employeeEmail, setEmployeeEmail] = React.useState("");
   const [uploadFile,setUploadedFile] = React.useState("")
   const [upload,setUpload] = React.useState(false)
   const [loading,setLoading]= React.useState(false)
-  const [data,setData] = React.useState(false)
+  const [data,setData] = React.useState([])
 
   React.useEffect(() => {
     sp.profiles.myProperties.get().then((response) => {
@@ -23,11 +23,11 @@ const Document = () => {
     });
   }, []);
  
-  // const fileUpload = (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //  var files = e.target.files,
-  //     f = files[0];
+  const fileUpload = (e) => {
+    e.preventDefault();
+    setLoading(true);
+   let files = e.target.files,
+      f = files[0];
   //   var allowedExtensions =
   //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
   //     "application/vnd.ms-excel" ||
@@ -35,28 +35,31 @@ const Document = () => {
   //   if (f.type !== allowedExtensions) {
   //     swal("Warning!", "Invalid File", "warning");
   //   } else {
-  //     var reader = new FileReader();
-  //     reader.onload = function (e) {
-  //       setLoading(true);
-  //       var data = reader.result;
-  //       let readedData = XLSX.read(data, { type: "binary" });
-  //       const wsname = readedData.SheetNames[0];
-  //       const ws = readedData.Sheets[wsname];
-  //       /* Convert array to json*/
-  //       const dataParse = XLSX.utils.sheet_to_json(ws);
-  //       if (dataParse.length === 0) {
-  //         setLoading(false);
-  //         swal("Warning!", "Document is empty", "warning");
-  //       } else {
-  //         setData(dataParse);
-  //         setUpload(true);
-  //         setLoading(false);
-  //       }
-  //     };
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        setLoading(true);
+        var data = reader.result;
+        let readedData = XLSX.read(data, { type: "binary" });
+        const wsname = readedData.SheetNames[0];
+        const ws = readedData.Sheets[wsname];
+        /* Convert array to json*/
+        const dataParse = XLSX.utils.sheet_to_json(ws);
+        if (dataParse.length === 0) {
+          setLoading(false);
+          swal("Warning!", "Document is empty", "warning");
+        } else {
+          console.log(dataParse)
+          setData(dataParse);
+          console.log(data)
+          setUpload(true);
+          setLoading(false);
+        }
+      // };
 
-  //    reader.readAsBinaryString(f);
-  //   }
-  // };
+     reader.readAsBinaryString(f);
+    }
+  };
+  console.log(data)
 
   return (
     <div className="appContainer">
@@ -76,7 +79,7 @@ const Document = () => {
             <div className={styles.uploadBtn}>
               <FileUpload
                 title="single upload"
-                onChange={(e) => setUploadedFile(e.target.value)}
+                onChange={fileUpload}
               />
             </div>
           </div>

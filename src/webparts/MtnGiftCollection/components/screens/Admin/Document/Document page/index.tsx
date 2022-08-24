@@ -6,11 +6,15 @@ import { sp } from "@pnp/sp";
 import MaterialTable from "material-table";
 import swal from "sweetalert";
 import Spinner from "../../../../Containers/Spinner";
-
+// import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+//  import {AddBox} from "@material-ui/icons";
+//  import {Search} from "@material-ui/icons";
+// import ArrowDownward from "@material-ui/icons/ArrowDownward";
+import { SvgIcon } from '@material-ui/core';
 
 const Document = () => {
   
-
+  
     const history = useHistory();
 
     type IType =

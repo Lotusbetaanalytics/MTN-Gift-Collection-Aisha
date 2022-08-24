@@ -1,7 +1,7 @@
 /* tslint:disable */
 require("./styles.module.css");
 const styles = {
-  header: 'header_5256bf2a'
+  header: 'header_0521e695'
 };
 
 export default styles;

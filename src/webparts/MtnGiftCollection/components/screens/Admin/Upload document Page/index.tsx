@@ -6,7 +6,7 @@ import "@pnp/sp/site-users/web";
 import { sp } from "@pnp/sp/presets/all";
 
 
-const Document = () => {
+const Document = ({context}) => {
   const [employeeEmail, setEmployeeEmail] = React.useState("");
   const [uploadFile,setUploadedFile] = React.useState("")
   React.useEffect(() => {

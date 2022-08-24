@@ -1,3 +1,5 @@
-declare const Document: () => JSX.Element;
+declare const Document: ({ context }: {
+    context: any;
+}) => JSX.Element;
 export default Document;
 //# sourceMappingURL=index.d.ts.map

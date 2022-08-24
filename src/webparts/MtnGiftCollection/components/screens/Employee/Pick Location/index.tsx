@@ -8,6 +8,7 @@ import Select from "../../../Containers/Select";
 import { set } from "@microsoft/sp-lodash-subset";
 import swal from "sweetalert";
 import { sequencesToID } from "office-ui-fabric-react";
+import Spinner from "../../../Containers/Spinner";
 
 const Document = () => {
   const history = useHistory()
@@ -104,6 +105,7 @@ const Document = () => {
   return (
     <div className="appContainer">
       <Sidebar />
+      {loading ? <Spinner/> :
       <div className="contentsRight">
         <Header title={"Pick up location"} userEmail={employeeEmail} />
         <div
@@ -123,7 +125,7 @@ const Document = () => {
               marginTop: "2rem",
             }}
           >
-            <button onClick={editHandler} disabled={approvalStatus === null? true : false } className="mtn__btn mtn__black"> Edit</button>
+            <button onClick={editHandler} disabled={approvalStatus === "Declined"? false : true } className="mtn__btn mtn__black"> Edit</button>
           </div>
           <p style={{ marginTop: "1rem" }}>Preffered pickup location</p>
 
@@ -191,10 +193,10 @@ const Document = () => {
               marginTop: "2rem",
             }}
           >
-            <button disabled={approvalStatus === null? false : true } className="mtn__btn mtn__yellow" onClick={updateHandler}> Submit</button>
+            <button disabled={approvalStatus === "Approved" || approvalStatus === "Declined" ? true : false } className="mtn__btn mtn__yellow" onClick={updateHandler}> Submit</button>
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

@@ -189,7 +189,7 @@ const Document = () => {
               marginTop: "2rem",
             }}
           >
-            <button className="mtn__btn mtn__yellow" onClick={updateHandler}> Save</button>
+            <button className="mtn__btn mtn__yellow" onClick={updateHandler} disabled={approvalStatus === "Approved"? true : false }> Save</button>
           </div>
         </div>
       </div>
