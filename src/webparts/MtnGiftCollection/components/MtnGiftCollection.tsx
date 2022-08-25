@@ -35,7 +35,7 @@ export default class mtnGiftCollection extends React.Component<ImtnGiftCollectio
         <HashRouter>
         <Switch>
         <Route path="/" exact component={HomeScreen} />
-        <Route path="/admin/document/upload" exact render={(props) => (<UploadDocument  context={this.props.pageContext}  /> )} /> 
+        <Route path="/admin/document/upload" exact component={UploadDocument}/> 
         <Route path="/admin/document" exact component={DocumentPage} />
         <Route path="/admin/document/:id" exact component={AdminViewDocument} />   
         <Route path="/admin/pickup" exact component={Pickup} />  

@@ -3,7 +3,7 @@ export { default as UploadDocument } from "./Admin/Document/Upload document Page
 export { default as DocumentPage } from "./Admin/Document/Document page/index";
 export { default as AdminViewDocument } from "./Admin/Document/View";
 export { default as configLocation } from "./Admin/config/Location";
-export { default as configDivision } from "./Admin/config/Division";
+export { default as configDivision } from "./Admin/config/notification";
 export { default as configRole } from "./Admin/config/Role";
 export { default as Config } from "./Admin/config/index";
 export { default as Pickup } from "./Admin/Pickup";

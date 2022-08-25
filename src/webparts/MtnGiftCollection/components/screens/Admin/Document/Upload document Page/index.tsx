@@ -8,7 +8,7 @@ import { readFile, utils } from 'xlsx';
 // const XLSX = require("xlsx");
 
 
-const Document = ({context}) => {
+const Document = ({history}) => {
   const [employeeEmail, setEmployeeEmail] = React.useState("");
   const [uploadFile,setUploadedFile] = React.useState("")
   const [upload,setUpload] = React.useState(false)
@@ -61,6 +61,62 @@ const Document = ({context}) => {
   };
   console.log(data)
 
+const bulkUpload = () => {
+  const uploadBulkTemp = (e) => {
+    e.preventDefault;
+    setUpload(false);
+    setLoading(true);
+    if (data.length === 0) {
+      setLoading(false);
+      swal("Warning!", "Document is empty", "warning");
+    } else {
+      for (let i = 0; i < data.length; i++) {
+        if (
+          data[i]["Surname"] &&
+          data[i]["FirstName"] &&
+          data[i]["JobTitle"] &&
+          data[i]["Email"] &&
+          data[i]["EmployeeLocation"] &&
+          data[i]["PickupLocation"] &&
+          data[i]["PickupPerson"] &&
+          data[i]["Division"] &&
+          data[i]["Vendor"] &&
+          data[i]["Phone"] 
+          
+        ) {
+          console.log("sinsins")
+          sp.web.lists
+            .getByTitle("GiftBeneficiaries")
+            .items.add({
+              Title: "",
+              Surname: data[i]["Surname"],
+              FirstName: data[i]["FirstName"],
+              JobTitle: data[i]["JobTitle"],
+              Email: data[i]["Email"],
+              EmployeeLocation: data[i]["EmployeeLocation"],
+              PickupLocation: data[i]["PickupLocation"],
+              PickupPerson: data[i]["PickupPerson"],
+              Division: data[i]["Division"],
+              Vendor: data[i]["Vendor"],
+              Phone: data[i]["Phone"],
+            })
+            .then((b) => {
+              swal("Success", "Success", "success");
+              setLoading(false);
+              setTimeout(function () {
+                history.push(`/admin/document`);
+              }, 3000);
+            });
+        } else {
+          setLoading(false);
+          console.log("uessss")
+          swal("Warning!", "Some Fields are required!", "warning");
+        }
+      }
+    }
+    console.log("yessssss")
+  };
+}
   return (
     <div className="appContainer">
       <Sidebar />
@@ -91,7 +147,7 @@ const Document = ({context}) => {
             <div className={styles.uploadBtn}>
               <FileUpload
                 title="bulk upload"
-                onChange={(e) => setUploadedFile(e.target.value)}
+                onChange={bulkUpload}
               />
             </div>
           </div>

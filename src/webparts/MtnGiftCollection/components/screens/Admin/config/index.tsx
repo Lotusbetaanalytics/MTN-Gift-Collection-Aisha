@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { HiHome } from 'react-icons/Hi'
 
 import {
   Select,
@@ -76,9 +77,9 @@ const Roles = ({ context }) => {
 
   // Menubar Items
   const menu = [
-    { name: "Admin", url: "/admin/config", },
+    { name: "Admin", url: "/admin/config", active: true, },
     { name: "Roles", url: "/admin/roles", },
-    { name: "Location", url: "/admin/location", active: true, },
+    { name: "Location", url: "/admin/location",  },
     { name: "Notification", url: "/admin/division" },
    
 ];
@@ -166,7 +167,10 @@ function getPeoplePickerItems(items: any[]) {
     setEmail(items[0].secondaryText)
 }
 
-  
+const homeHandler =() =>{
+    history.push("/admin/document")
+  }
+   
 
   return (
     <div className="appContainer">
@@ -178,6 +182,12 @@ function getPeoplePickerItems(items: any[]) {
           <div>
             <MenuBar menu={menu} />
           </div>
+          <div><div className="iconBtn" onClick={homeHandler}> <HiHome/></div></div>
+         
+        </div>
+        <div style={{marginTop:"20px",marginBottom:"20px"}}></div>
+        <div className="spaceBetween">
+          <div></div>
           <div className="btnContainer right">
             <button
               onClick={openHandler}

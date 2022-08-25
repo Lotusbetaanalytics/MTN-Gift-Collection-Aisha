@@ -45,11 +45,51 @@
   align-items: center;
   flex-direction: row;
 }
+.space{
+  display: flex;
+  flex-direction: row;
+  background-color:white;
+  padding: 2%;
+  margin: 2%;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
 
 .active {
   background-color: #ffcc00;
 }
+.switchBtn{
+  display: flex;
+  height: 50px;
+  width: 100px;
+  border-radius: 25px;
+  align-items: center;
 
+}
+.gray{
+  background-color: gray;
+}
+.yellow{
+  background-color: #ffcc00;
+}
+.offbtn{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border-bottom: gray;
+}
+.white{
+  background-color: white;
+}
+.onbtn{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border-bottom: gray;
+ 
+}
 .no_display{
   display: none;
 }
@@ -290,5 +330,5 @@
 }
 .iconBtn svg{
   width: 70px;
-  height: 50px;
+  height: 40px;
 }

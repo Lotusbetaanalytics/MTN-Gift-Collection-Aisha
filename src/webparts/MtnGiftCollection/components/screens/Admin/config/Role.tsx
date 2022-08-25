@@ -7,6 +7,7 @@ import { sp, } from "@pnp/sp"
 import swal from 'sweetalert';
 import Modal from '../../../Containers/Modal';
 import Spinner from '../../../Containers/Spinner';
+import { HiHome } from 'react-icons/Hi'
 
 const Role = () => {
     // Helpers
@@ -53,8 +54,8 @@ const Role = () => {
     // Menubar Items
     const menu = [
         { name: "Admin", url: "/admin/config", },
-        { name: "Roles", url: "/admin/roles", },
-        { name: "Location", url: "/admin/location", active: true, },
+        { name: "Roles", url: "/admin/roles", active: true, },
+        { name: "Location", url: "/admin/location", },
         { name: "Notification", url: "/admin/division" },
         
     ];
@@ -112,18 +113,35 @@ const Role = () => {
         setEdit(false)
     }
 
-
+    const homeHandler =() =>{
+        history.push("/admin/document")
+      }
+       
 
     return <div className="appContainer">
          <Sidebar />
         <div className='contentsRight'>
         <Header title={"Document"} userEmail={email} />
         <div className="spaceBetween">
-            <div><MenuBar menu={menu} /></div>
-            <div className='btnContainer right'>
-                <button onClick={openHandler} className="mtn__btns mtn__blue" type='button'>Add Role</button>
-            </div>
-        </div>  
+          <div>
+            <MenuBar menu={menu} />
+          </div>
+          <div><div className="iconBtn" onClick={homeHandler}> <HiHome/></div></div>
+         
+        </div>
+        <div style={{marginTop:"20px",marginBottom:"20px"}}></div>
+        <div className="spaceBetween">
+          <div></div>
+          <div className="btnContainer right">
+            <button
+              onClick={openHandler}
+              className="mtn__btns mtn__black"
+              type="button"
+            >
+              Add Role
+            </button>
+          </div>
+        </div>
         <div className="center" style={{ marginTop: "50px" }}>   
             <MaterialTable
                 title=""
