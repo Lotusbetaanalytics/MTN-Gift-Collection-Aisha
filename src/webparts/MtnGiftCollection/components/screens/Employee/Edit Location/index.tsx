@@ -11,7 +11,7 @@ import { sequencesToID } from "office-ui-fabric-react";
 
 const Document = () => {
   const history = useHistory()
-   const Email = "johndoe@yahoo.com"
+  
   const [updateStatus,setUpdateStatus] = React.useState("")
 
   const locationOption = [
@@ -49,22 +49,18 @@ const Document = () => {
 
   React.useEffect(() => {
     generateSerial()
-    sp.profiles.myProperties.get().then((response) => {
-  
-      setEmployeeEmail(response.DisplayName);
-    });
+      sp.profiles.myProperties.get().then((response) => {
+        setEmployeeEmail(response.UserProfileProperties[19].Value);
+      const userEmail = response.UserProfileProperties[19].Value
+    
     
     sp.web.lists
     .getByTitle(`GiftBeneficiaries`)
-    .items.filter(`Email eq '${Email}' `)
+    .items.filter(`Email eq '${userEmail}' `)
     .get()
     .then((res) =>{
       console.log(res)
-      if (res.length > 0) {
-        setUpdateStatus(res[0].UpdateStatus)
-      
-      }
-      if (res[0].UpdateStatus === "Approved") {
+      if (res.length > 0 && res[0].UpdateStatus === "Approved") {
         setLocation(res[0].PickupLocation)
         setCollector(res[0].CollectedBy)
         setApprovalStatus(res[0].ApprovalStatus)
@@ -77,6 +73,7 @@ const Document = () => {
         history.push("/")
       }
     })
+  })
   }, []);
  
   const updateHandler = (e) =>{

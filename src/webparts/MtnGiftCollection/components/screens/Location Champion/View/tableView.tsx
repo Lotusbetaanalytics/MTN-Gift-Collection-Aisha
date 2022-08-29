@@ -42,18 +42,24 @@ const Document = ({match}) => {
   const [proxyType,setProxyType] = React.useState("")
 
   const [ID,setID] = React.useState("")
-  React.useEffect(() => {
-    sp.profiles.myProperties.get().then((response) => {
-      console.log(response);
-      setEmployeeEmail(response.Email);
-    });
-  }, []);
+
+  
 
   React.useEffect(() => {
     sp.profiles.myProperties.get().then((response) => {
-      
-      setEmployeeEmail(response.DisplayName);
-    });
+        setEmployeeEmail(response.UserProfileProperties[19].Value);
+      const userEmail = response.UserProfileProperties[19].Value
+  
+      sp.web.lists
+        .getByTitle("Admin")
+        .items.filter(`Email eq '${userEmail}'`).get().then((response)=>
+        {console.log(response)
+          if (response.length === 0  ) {
+            sweetAlert("Warning!", "you are not authorize to use this portal", "error");
+            history.push("/")
+          }
+      })
+    
     sp.web.lists.getByTitle(`GiftBeneficiaries`).items.filter(`ApprovalStatus eq 'Approved' and Phone eq '${phone}'`).get().then
             ((res) => {
               console.log(res)
@@ -71,6 +77,7 @@ const Document = ({match}) => {
                 setCollectionStatus(res[0].CollectionStatus)
                 
             })
+    })
   }, [phone]);
 
  

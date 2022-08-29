@@ -30,7 +30,7 @@ const Document = () => {
   const [employeeEmail, setEmployeeEmail] = React.useState("");
   const [ID,setID] = React.useState("")
   const [uniqueNumber,setUniqueNumber] = React.useState("")
-
+  const [pickupLocation,setPickupLocation] = React.useState("")
   const editHandler = () =>{
     history.push("/employee/location/edit")
   }
@@ -50,20 +50,14 @@ const Document = () => {
   React.useEffect(() => {
     generateSerial()
     sp.profiles.myProperties.get().then((response) => {
-  
-      setEmployeeEmail(response.DisplayName);
-    });
+      setEmployeeEmail(response.UserProfileProperties[19].Value);
+       const userEmail = response.UserProfileProperties[19].Value
     
     sp.web.lists
     .getByTitle(`GiftBeneficiaries`)
-    .items.filter(`Email eq '${Email}' `)
+    .items.filter(`Email eq '${userEmail}' `)
     .get()
     .then((res) =>{
-      console.log(res)
-      if (res.length > 0) {
-        setUpdateStatus(res[0].UpdateStatus)
-      
-      }
       if (res[0].UpdateStatus === "Approved") {
         setLocation(res[0].PickupLocation)
         setCollector(res[0].CollectedBy)
@@ -77,8 +71,16 @@ const Document = () => {
         history.push("/")
       }
     })
+    sp.web.lists
+          .getByTitle(`Notification`)
+          .items.get()
+          .then((res) => {
+            setPickupLocation(res[2].Switch);
+            console.log(res);
+          });
+  })
   }, []);
- console.log(uniqueNumber)
+ 
 
   const updateHandler = (e) =>{
     setLoading(true)
@@ -97,6 +99,13 @@ const Document = () => {
     }).then((res) => {
       setLoading(false)
         swal("Success", "Successfull", "success");
+    sp.web.lists
+    .getByTitle(`GiftBeneficiaries`)
+    .items.filter(`Email eq '${Email}' `)
+    .get()
+    .then((res) =>{
+      setApprovalStatus(res[0].ApprovalStatus)
+    })
     }).catch((e) => {
         swal("Warning!", "An Error Occured, Try Again!", "error");
         console.error(e);
@@ -125,7 +134,7 @@ const Document = () => {
               marginTop: "2rem",
             }}
           >
-            <button onClick={editHandler} disabled={approvalStatus === "Declined"? false : true } className="mtn__btn mtn__black"> Edit</button>
+            <button onClick={editHandler} disabled={approvalStatus === "Pending" || approvalStatus === "Declined"? false : true } className="mtn__btn mtn__black"> Edit</button>
           </div>
           <p style={{ marginTop: "1rem" }}>Preffered pickup location</p>
 
@@ -193,7 +202,7 @@ const Document = () => {
               marginTop: "2rem",
             }}
           >
-            <button disabled={approvalStatus === "Approved" || approvalStatus === "Declined" ? true : false } className="mtn__btn mtn__yellow" onClick={updateHandler}> Submit</button>
+            <button disabled={approvalStatus === "Approved" || approvalStatus === "Pending" || approvalStatus === "Declined" || pickupLocation === "Off" ? true : false } className="mtn__btn mtn__yellow" onClick={updateHandler}> Submit</button>
           </div>
         </div>
       </div>}

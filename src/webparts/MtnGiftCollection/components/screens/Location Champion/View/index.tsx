@@ -21,7 +21,7 @@ const Document = ({match}) => {
       history.push("/locationchampion/report")
     }
     const homeHanler =() =>{
-      history.push("/locationchampion/search/result")
+      history.push("/locationchampion")
     }
 
   const [employeeEmail, setEmployeeEmail] = React.useState("");
@@ -41,11 +41,23 @@ const Document = ({match}) => {
   const [proxyType,setProxyType] = React.useState("")
 
   const [ID,setID] = React.useState("")
+
   React.useEffect(() => {
     sp.profiles.myProperties.get().then((response) => {
-      console.log(response);
-      setEmployeeEmail(response.Email);
-    });
+      setEmployeeEmail(response.UserProfileProperties[19].Value);
+    const userEmail = response.UserProfileProperties[19].Value
+
+    sp.web.lists
+      .getByTitle("Admin")
+      .items.filter(`Email eq '${userEmail}'`).get().then((response)=>
+      {console.log(response)
+        if (response.length === 0  ) {
+          swal("Warning!", "you are not authorize to use this portal", "error");
+          history.push("/")
+        }
+      })
+    })      
+      
   }, []);
   
 

@@ -75,10 +75,10 @@ React.useEffect(() => {
 
 React.useEffect(() => {
   sp.profiles.myProperties.get().then((response) => {
-    console.log(response);
-    setEmployeeEmail(response.DisplayName);
+    setEmployeeEmail(response.UserProfileProperties[19].Value);
   });
 }, []);
+
   return (
     <div className="appContainer">
       <Sidebar />

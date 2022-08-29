@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { HiHome } from 'react-icons/Hi'
+import { HiHome } from "react-icons/Hi";
 
 import {
   Select,
@@ -13,6 +13,11 @@ import {
   Sidebar,
   Header,
 } from "../../../Containers";
+import {
+  SPHttpClient,
+  SPHttpClientConfiguration,
+  SPHttpClientResponse,
+} from "@microsoft/sp-http";
 import MaterialTable from "material-table";
 import { sp } from "@pnp/sp";
 import swal from "sweetalert";
@@ -70,19 +75,17 @@ const Roles = ({ context }) => {
   }, []);
   React.useEffect(() => {
     sp.profiles.myProperties.get().then((response) => {
-      console.log(response.UserProfileProperties[19].Value);
-      setEmail(response.UserProfileProperties[19].Value);
+      setEmployeeEmail(response.UserProfileProperties[19].Value);
     });
   }, []);
 
   // Menubar Items
   const menu = [
-    { name: "Admin", url: "/admin/config", active: true, },
-    { name: "Roles", url: "/admin/roles", },
-    { name: "Location", url: "/admin/location",  },
+    { name: "Admin", url: "/admin/config" },
+    { name: "Roles", url: "/admin/roles" },
+    { name: "Location", url: "/admin/location" },
     { name: "Notification", url: "/admin/division" },
-   
-];
+  ];
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -154,38 +157,44 @@ const Roles = ({ context }) => {
   const openHandler = () => {
     setOpen(true);
     setEdit(false);
-    console.log("yes")
+    console.log("yes");
   };
 
-//   function getPeoplePickerItems(items: any[]) {
-//     setName(items[0].text);
-//     setEmail(items[0].secondaryText);
-//   }
-function getPeoplePickerItems(items: any[]) {
-    console.log(items)
-    setName(items[0].text)
-    setEmail(items[0].secondaryText)
-}
+  
 
-const homeHandler =() =>{
-    history.push("/admin/document")
+  function getPeoplePickerItems(items: any[]) {
+    const staff = items[0].secondaryText;
+    setName(items[0].text);
+    setEmail(items[0].secondaryText);
+    context.spHttpClient.get(
+      `https://mtncloud.sharepoint.com/sites/MTNNigeriaComplianceUniverse/testenv/_api/lists/GetByTitle('CURRENT HCM STAFF LIST')/items?$filter=EMAIL_ADDRESS eq '${staff}'`,
+
+      SPHttpClient.configurations.v1
+    );
   }
-   
+
+  const homeHandler = () => {
+    history.push("/admin/document");
+  };
 
   return (
     <div className="appContainer">
       <Sidebar />
       <div className="contentsRight">
         <Header title={"Document"} userEmail={employeeEmail} />
-        
+
         <div className="spaceBetween">
           <div>
             <MenuBar menu={menu} />
           </div>
-          <div><div className="iconBtn" onClick={homeHandler}> <HiHome/></div></div>
-         
+          <div>
+            <div className="iconBtn" onClick={homeHandler}>
+              {" "}
+              <HiHome />
+            </div>
+          </div>
         </div>
-        <div style={{marginTop:"20px",marginBottom:"20px"}}></div>
+        <div style={{ marginTop: "20px", marginBottom: "20px" }}></div>
         <div className="spaceBetween">
           <div></div>
           <div className="btnContainer right">
@@ -198,6 +207,7 @@ const homeHandler =() =>{
             </button>
           </div>
         </div>
+
         <div className="center" style={{ marginTop: "50px" }}>
           <MaterialTable
             title=""
@@ -286,24 +296,40 @@ const homeHandler =() =>{
                     resolveDelay={1000}
                   />
                 </div>
-
-                <Select
-                  title="Role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  size="mtn__adult"
-                  options={roles}
-                  filter={true}
-                  filterOption="Title"
-                />
-
-                <button
-                  onClick={edit ? editHandler : submitHandler}
-                  type="button"
-                  className="mtn__btn mtn__yellow"
+                <div
+                  style={{
+                    display: "flex",
+                    marginTop: "1rem",
+                    marginBottom: ".5rem",
+                    width: "100%",
+                  }}
                 >
-                  {edit ? "Edit Admin" : "Add Admin"}
-                </button>
+                  <Select
+                    title="Role"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    size="mtn__adult"
+                    options={roles}
+                    filter={true}
+                    filterOption="Title"
+                  />
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    marginTop: "1rem",
+                    marginBottom: ".5rem",
+                  }}
+                >
+                  <button
+                    onClick={edit ? editHandler : submitHandler}
+                    type="button"
+                    className="mtn__btn mtn__yellow"
+                  >
+                    {edit ? "Edit Admin" : "Add Admin"}
+                  </button>
+                </div>
               </div>
             )
           }
@@ -316,4 +342,3 @@ const homeHandler =() =>{
 };
 
 export default Roles;
-

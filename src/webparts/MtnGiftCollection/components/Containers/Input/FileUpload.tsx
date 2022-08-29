@@ -7,6 +7,7 @@ const FileUpload = ({ onChange, title, }) => {
             <button className={`mtn__btn ${styles.uploadBtn}`}>{title}</button>
             <input
                 type="file"
+                multiple
                 onChange={onChange}
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
             />

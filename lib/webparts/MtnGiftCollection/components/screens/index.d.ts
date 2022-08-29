@@ -5,7 +5,7 @@ export { default as AdminViewDocument } from "./Admin/Document/View";
 export { default as configLocation } from "./Admin/config/Location";
 export { default as configDivision } from "./Admin/config/notification";
 export { default as configRole } from "./Admin/config/Role";
-export { default as Config } from "./Admin/config/index";
+export { default as Roles } from "./Admin/config/index";
 export { default as Pickup } from "./Admin/Pickup";
 export { default as Report } from "./Admin/Report";
 export { default as AdminViewReport } from "./Admin/Report/viewReport";

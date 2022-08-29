@@ -24,10 +24,11 @@ const Document = ({history}) => {
   }, []);
  
   const fileUpload = (e) => {
-    e.preventDefault();
-    setLoading(true);
-   let files = e.target.files,
-      f = files[0];
+  //   e.preventDefault();
+  //   console.log("yess")
+  //   setLoading(true);
+   let files = e.target.files
+  //     f = files[0];
   //   var allowedExtensions =
   //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
   //     "application/vnd.ms-excel" ||
@@ -35,36 +36,56 @@ const Document = ({history}) => {
   //   if (f.type !== allowedExtensions) {
   //     swal("Warning!", "Invalid File", "warning");
   //   } else {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        setLoading(true);
-        var data = reader.result;
-        let readedData = XLSX.read(data, { type: "binary" });
-        const wsname = readedData.SheetNames[0];
-        const ws = readedData.Sheets[wsname];
-        /* Convert array to json*/
-        const dataParse = XLSX.utils.sheet_to_json(ws);
-        if (dataParse.length === 0) {
-          setLoading(false);
-          swal("Warning!", "Document is empty", "warning");
-        } else {
-          console.log(dataParse)
-          setData(dataParse);
-          console.log(data)
-          setUpload(true);
-          setLoading(false);
-        }
-      // };
+     
+  //         setLoading(false);
+  //       }
+  //      var reader = new FileReader();
+  //     reader.onload = function (e) {
+  //       setLoading(true);
+  //       var data = reader.result;
+  //       let readedData = XLSX.read(data, { type: "binary" });
+  //       const wsname = readedData.SheetNames[0];
+  //       const ws = readedData.Sheets[wsname] ;
+  //       /* Convert array to json*/
+  //       const dataParse = XLSX.utils.sheet_to_json(ws);
+  //       if (dataParse.length === 0) {
+  //         setLoading(false);
+  //         swal("Warning!", "Document is empty", "warning");
+  //       } else {
+  //         console.log(dataParse)
+  //         setData(dataParse);
+  //         console.log(data)
+  //         setUpload(true);
 
-     reader.readAsBinaryString(f);
-    }
-  };
+  //    reader.readAsBinaryString(f);
+  //   }
+  //     }
+  const reader = new FileReader();
+    const rABS = !!reader.readAsBinaryString;
+    console.log(rABS)
+    reader.onload = e => {
+      /* Parse data */
+      console.log(e.target.result,"result")
+      const bstr = e.target.result;
+      const wb = XLSX.read(bstr, { type: rABS ? "binary" : "array" });
+      /* Get first worksheet */
+      const wsname = wb.SheetNames[0];
+      const ws = wb.Sheets[wsname];
+      console.log(rABS, wb);
+      /* Convert array of arrays */
+      const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      /* Update state */
+      setData(data);
+      console.log(data)
+    };
+   
+}
   console.log(data)
 
-const bulkUpload = () => {
-  const uploadBulkTemp = (e) => {
+const bulkUpload = (e) => {
     e.preventDefault;
-    setUpload(false);
+    setUpload(true);
+    console.log("yess")
     setLoading(true);
     if (data.length === 0) {
       setLoading(false);
@@ -113,7 +134,7 @@ const bulkUpload = () => {
           swal("Warning!", "Some Fields are required!", "warning");
         }
       }
-    }
+    
     console.log("yessssss")
   };
 }
@@ -145,10 +166,11 @@ const bulkUpload = () => {
             </div>
 
             <div className={styles.uploadBtn}>
-              <FileUpload
+              {/* <FileUpload
                 title="bulk upload"
                 onChange={bulkUpload}
-              />
+              /> */}
+              <input type="file" onChange={bulkUpload} multiple/>
             </div>
           </div>
         </div>

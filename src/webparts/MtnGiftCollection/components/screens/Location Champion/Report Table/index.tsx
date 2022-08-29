@@ -58,26 +58,34 @@ const [data, setData] = React.useState([]);
 const [loading, setLoading] = React.useState(false);
 
 const homeHandler =() =>{
-  history.push("/locationchampion/search/result")
+  history.push("/locationchampion")
 }
 
 
 React.useEffect(() => {
   setLoading(true)
+  sp.profiles.myProperties.get().then((response) => {
+    setEmployeeEmail(response.UserProfileProperties[19].Value);
+  const userEmail = response.UserProfileProperties[19].Value
+
+  sp.web.lists
+    .getByTitle("Admin")
+    .items.filter(`Email eq '${userEmail}'`).get().then((response)=>
+    {console.log(response)
+      if (response.length === 0  ) {
+        sweetAlert("Warning!", "you are not authorize to use this portal", "error");
+        history.push("/")
+      }
+  })
   sp.web.lists.getByTitle(`Report`).items.get().then
             ((res) => {
       console.log(res)
       setData(res)
       setLoading(false);
-    });
+    })
+  })
 }, []);
 
-React.useEffect(() => {
-  sp.profiles.myProperties.get().then((response) => {
-    console.log(response);
-    setEmployeeEmail(response.DisplayName);
-  });
-}, []);
 
   return (
     <div className="appContainer">

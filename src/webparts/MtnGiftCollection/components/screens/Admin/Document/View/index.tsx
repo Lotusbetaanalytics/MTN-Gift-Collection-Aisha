@@ -30,10 +30,12 @@ const Document = ({match}) => {
 
   React.useEffect(() => {
     setLoading(true)
-    sp.profiles.myProperties.get().then((response) => {
-      
-      setEmployeeEmail(response.DisplayName);
-    });
+  
+      sp.profiles.myProperties.get().then((response) => {
+        setEmployeeEmail(response.UserProfileProperties[19].Value);
+      });
+  
+  
     sp.web.lists.getByTitle(`GiftBeneficiaries`).items.filter(`ID eq '${itemID}'`).get().then
             ((res) => {
               
@@ -65,6 +67,10 @@ const Document = ({match}) => {
     }).then((res) => {
       setLoading(false)
         swal("Success", "Update Successfull", "success");
+        sp.web.lists.getByTitle(`GiftBeneficiaries`).items.filter(`ID eq '${itemID}'`).get().then
+        ((res) => {
+          setUpdateStatus(res[0].UpdateStatus)
+        })
     }).catch((e) => {
         swal("Warning!", "An Error Occured, Try Again!", "error");
         console.error(e);
