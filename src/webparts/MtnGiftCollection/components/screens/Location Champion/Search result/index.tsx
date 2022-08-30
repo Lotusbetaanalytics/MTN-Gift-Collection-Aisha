@@ -42,11 +42,27 @@ const Document = () => {
   const [date, setDate] = React.useState("");
   const [time, setTime] = React.useState("");
   const [ID, setID] = React.useState("");
+
   React.useEffect(() => {
     sp.profiles.myProperties.get().then((response) => {
-      console.log(response);
-      setEmployeeEmail(response.Email);
-    });
+      setEmployeeEmail(response.UserProfileProperties[19].Value);
+      const userEmail = response.UserProfileProperties[19].Value;
+
+      sp.web.lists
+        .getByTitle("Admin")
+        .items.filter(`Role eq 'Location Champion' and Email eq '${userEmail}'`)
+        .get()
+        .then((response) => {
+          if (response.length === 0) {
+            swal(
+              "Warning!",
+              "you are not authorize to use this portal",
+              "error"
+            );
+            history.push("/");
+          }
+        }) 
+      })
   }, []);
 
   React.useEffect(() => {
@@ -74,28 +90,7 @@ const Document = () => {
     let d = new Date();
     let monthName = months[d.getMonth()]; // "July" (or current month)
     setDate(getToday + "-" + monthName + "-" + getYear);
-    console.log(getToday, monthName, getYear);
-    console.log("this is date", date);
-
-    sp.profiles.myProperties.get().then((response) => {
-      setEmployeeEmail(response.UserProfileProperties[19].Value);
-      const userEmail = response.UserProfileProperties[19].Value;
-
-      sp.web.lists
-        .getByTitle("Admin")
-        .items.filter(`Email eq '${userEmail}'`)
-        .get()
-        .then((response) => {
-          console.log(response);
-          if (response.length === 0) {
-            swal(
-              "Warning!",
-              "you are not authorize to use this portal",
-              "error"
-            );
-            history.push("/");
-          }
-        });
+    
 
       sp.web.lists
         .getByTitle(`GiftBeneficiaries`)
@@ -118,11 +113,14 @@ const Document = () => {
           setID(res[0].ID);
           setCollectionStatus(res[0].CollectionStatus);
         });
-    });
+    
   }, [time, phone]);
 
   const openUpadate = () => {
     setModal(true);
+  };
+  const homeHandler = () => {
+    history.push("/home");
   };
 
   const updateHandler = () => {
@@ -136,6 +134,7 @@ const Document = () => {
         CollectedBy: pickupPerson,
         ProxyType: proxyType,
       });
+
     sp.web.lists
       .getByTitle("Report")
       .items.add({
@@ -178,8 +177,7 @@ const Document = () => {
   const backHandler = () => {
     history.push("/locationchampion/report");
   };
-  console.log(date);
-  console.log(time);
+ 
 
   return (
     <div className="appContainer">
@@ -195,8 +193,10 @@ const Document = () => {
               placeholder={"Input phone number"}
             />
           </div>
-          <div>
-            {" "}
+          <div style={{display:"flex",flexDirection:"row"}}>
+          <button className="mtn__btn mtn__yellow" onClick={homeHandler} style={{marginRight:"10px"}}>
+              Logout
+            </button>
             <button className="mtn__btn mtn__white" onClick={backHandler}>
               Report
             </button>

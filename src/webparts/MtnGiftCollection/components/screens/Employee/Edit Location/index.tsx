@@ -8,6 +8,7 @@ import Select from "../../../Containers/Select";
 import { set } from "@microsoft/sp-lodash-subset";
 import swal from "sweetalert";
 import { sequencesToID } from "office-ui-fabric-react";
+import Spinner from "../../../Containers/Spinner";
 
 const Document = () => {
   const history = useHistory()
@@ -23,6 +24,7 @@ const Document = () => {
   const collectorOption = [{ value: "Self" }, { value: "Delegate" }];
   const [loading,setLoading] = React.useState(false)
   const [Location, setLocation] = React.useState("");
+  const [Locations, setLocations] = React.useState([]);
   const [Collector, setCollector] = React.useState("");
   const [delegateFullname,setDelegateFullname] = React.useState("");
   const [delegatePhone,setDelegatePhone]  = React.useState("");
@@ -49,6 +51,7 @@ const Document = () => {
 
   React.useEffect(() => {
     generateSerial()
+    setLoading(true)
       sp.profiles.myProperties.get().then((response) => {
         setEmployeeEmail(response.UserProfileProperties[19].Value);
       const userEmail = response.UserProfileProperties[19].Value
@@ -73,6 +76,13 @@ const Document = () => {
         history.push("/")
       }
     })
+    sp.web.lists
+    .getByTitle(`Location`)
+    .items.get()
+    .then((res) => {
+      setLocations(res);
+      setLoading(false)
+    });
   })
   }, []);
  
@@ -98,12 +108,26 @@ const Document = () => {
         console.error(e);
     });
   }
+
+  const homeHandler = () => {
+    history.push("/home");
+  };
+  
   return (
     <div className="appContainer">
       <Sidebar />
-      <div className="contentsRight">
+      
+       <div className="contentsRight">
         <Header title={"Pick up location"} userEmail={employeeEmail} />
-        <div
+        <div className="spaceBetween">
+          <div></div>
+          <div>
+            <button className="mtn__btn mtn__yellow" onClick={homeHandler}>
+              logout
+            </button>
+          </div>
+        </div>
+        {loading ? <Spinner/> :<div
           style={{
             width: "30%",
             display: "flex",
@@ -131,9 +155,11 @@ const Document = () => {
               }}
               title={Location}
               value={Location}
-              options={locationOption}
+              options={Locations}
+              filterOption="Title"
+                filter={true}
               size="mtn__adult"
-             
+          
             />
           </div>
           <p>Collector</p>
@@ -188,7 +214,7 @@ const Document = () => {
           >
             <button className="mtn__btn mtn__yellow" onClick={updateHandler} disabled={approvalStatus === "Approved"? true : false }> Save</button>
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );

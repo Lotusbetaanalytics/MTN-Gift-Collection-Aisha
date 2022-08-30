@@ -73,8 +73,28 @@ const Document = () => {
   React.useEffect(() => {
     sp.profiles.myProperties.get().then((response) => {
       setEmployeeEmail(response.UserProfileProperties[19].Value);
+      const userEmail = (response.UserProfileProperties[19].Value)
+      sp.web.lists
+      .getByTitle("Admin")
+      .items.filter(`Role eq 'Admin' and Email eq '${userEmail}'`)
+      .get()
+      .then((response) => {
+       
+        if (response.length === 0) {
+          sweetAlert(
+            "Warning!",
+            "you are not authorize to use this portal",
+            "error"
+          );
+          history.push("/");
+        }
+    })
     });
   }, []);
+
+  const homeHandler = () =>{
+    history.push("/admin/document/upload")
+  }
 
   return (
     <div className="appContainer">
@@ -82,7 +102,9 @@ const Document = () => {
       <div className="contentsRight">
         <Header title={"Document"} userEmail={employeeEmail} />
         <div className="spaceBetween">
-          <div></div>
+          <div> <button className="mtn__btn mtn__white" onClick={homeHandler}>
+              Add Employee
+            </button></div>
           <Navigation document="active" />
         </div>
         <div className="center" style={{ marginTop: "50px" }}>

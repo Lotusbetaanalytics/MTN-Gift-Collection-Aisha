@@ -62,21 +62,28 @@ const homeHandler =() =>{
 }
 
 
+
 React.useEffect(() => {
   setLoading(true)
-  sp.profiles.myProperties.get().then((response) => {
-    setEmployeeEmail(response.UserProfileProperties[19].Value);
-  const userEmail = response.UserProfileProperties[19].Value
+    sp.profiles.myProperties.get().then((response) => {
+      setEmployeeEmail(response.UserProfileProperties[19].Value);
+      const userEmail = response.UserProfileProperties[19].Value;
 
-  sp.web.lists
-    .getByTitle("Admin")
-    .items.filter(`Email eq '${userEmail}'`).get().then((response)=>
-    {console.log(response)
-      if (response.length === 0  ) {
-        sweetAlert("Warning!", "you are not authorize to use this portal", "error");
-        history.push("/")
-      }
-  })
+      sp.web.lists
+        .getByTitle("Admin")
+        .items.filter(`Role eq 'Location Champion' and Email eq '${userEmail}'`)
+        .get()
+        .then((response) => {
+         
+          if (response.length === 0) {
+            sweetAlert(
+              "Warning!",
+              "you are not authorize to use this portal",
+              "error"
+            );
+            history.push("/");
+          }
+    
   sp.web.lists.getByTitle(`Report`).items.get().then
             ((res) => {
       console.log(res)
@@ -84,9 +91,12 @@ React.useEffect(() => {
       setLoading(false);
     })
   })
+})
 }, []);
 
-
+const home = () => {
+  history.push("/home");
+};
   return (
     <div className="appContainer">
       <Sidebar />
@@ -94,7 +104,7 @@ React.useEffect(() => {
         <Header title={"Reports"} userEmail={employeeEmail} />
         <div className="spaceBetween">
           <div><div className="iconBtn" onClick={homeHandler}> <HiHome/></div></div>
-          <div> <button className="mtn__btn mtn__yellow">Report</button></div>
+          <div> <button onClick={home} className="mtn__btn mtn__yellow">Logout</button> </div>
         </div>
         <div className="center" style={{marginTop:"50px"}}>
         {loading ? (

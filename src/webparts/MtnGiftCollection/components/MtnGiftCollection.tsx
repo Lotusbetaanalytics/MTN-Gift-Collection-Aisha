@@ -6,7 +6,7 @@ import { Route, Switch, HashRouter } from "react-router-dom";
 import { sp } from "@pnp/sp";
 import './assets/icon.scss'
 import * as jQuery from "jquery";
- import { AdminViewDocument, AdminViewReport, configDivision, configLocation, configRole, DocumentPage, EmployeePickLocation, EmployeePickLocationEdit, HomeScreen, LocationReport, LocationResult, LocationSearch, LocationView, Pickup, Report, Roles, UploadDocument } from './screens';
+ import { AdminViewDocument, AdminViewReport, configDivision, configLocation, configRole, DocumentPage, EmployeePickLocation, EmployeePickLocationEdit, Homepage, HomeScreen, LocationReport, LocationResult, LocationSearch, LocationView, Pickup, Report, Roles, UploadDocument } from './screens';
  import {
   SPHttpClient,
   SPHttpClientConfiguration,
@@ -35,6 +35,7 @@ export default class mtnGiftCollection extends React.Component<ImtnGiftCollectio
         <HashRouter>
         <Switch>
         <Route path="/" exact component={HomeScreen} />
+        <Route path="/home" exact component={Homepage}/> 
         <Route path="/admin/document/upload" exact component={UploadDocument}/> 
         <Route path="/admin/document" exact component={DocumentPage} />
         <Route path="/admin/document/:id" exact component={AdminViewDocument} />   

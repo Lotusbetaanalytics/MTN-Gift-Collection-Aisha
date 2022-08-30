@@ -19,7 +19,22 @@ const Document = ({history}) => {
     sp.profiles.myProperties.get().then((response) => {
       console.log(response);
       setEmployeeEmail(response.Email);
-      
+      const userEmail = (response.UserProfileProperties[19].Value)
+      sp.web.lists
+      .getByTitle("Admin")
+      .items.filter(`Role eq 'Admin' and Email eq '${userEmail}'`)
+      .get()
+      .then((response) => {
+       
+        if (response.length === 0) {
+          sweetAlert(
+            "Warning!",
+            "you are not authorize to use this portal",
+            "error"
+          );
+          history.push("/");
+        }
+    })
     });
   }, []);
  
@@ -80,63 +95,149 @@ const Document = ({history}) => {
     };
    
 }
-  console.log(data)
+// const readUploadFile = (e) => {
+//   e.preventDefault();
+//   if (e.target.files) {
+//       const reader = new FileReader();
+//       reader.onload = (e) => {
+//           const data = e.target.result;
+//           const workbook = XLSX.read(data, { type: "array" });
+//           const sheetName = workbook.SheetNames[0];
+//           const worksheet = workbook.Sheets[sheetName];
+//           const json = XLSX.utils.sheet_to_json(worksheet);
+//           console.log(json);
+//       };
+//       reader.readAsArrayBuffer(e.target.files[0]);
+//   }
+// }
+  
 
-const bulkUpload = (e) => {
+const readUploadFile = (e) => {
     e.preventDefault;
-    setUpload(true);
-    console.log("yess")
     setLoading(true);
-    if (data.length === 0) {
-      setLoading(false);
-      swal("Warning!", "Document is empty", "warning");
-    } else {
-      for (let i = 0; i < data.length; i++) {
-        if (
-          data[i]["Surname"] &&
-          data[i]["FirstName"] &&
-          data[i]["JobTitle"] &&
-          data[i]["Email"] &&
-          data[i]["EmployeeLocation"] &&
-          data[i]["PickupLocation"] &&
-          data[i]["PickupPerson"] &&
-          data[i]["Division"] &&
-          data[i]["Vendor"] &&
-          data[i]["Phone"] 
-          
-        ) {
-          console.log("sinsins")
-          sp.web.lists
-            .getByTitle("GiftBeneficiaries")
-            .items.add({
-              Title: "",
-              Surname: data[i]["Surname"],
-              FirstName: data[i]["FirstName"],
-              JobTitle: data[i]["JobTitle"],
-              Email: data[i]["Email"],
-              EmployeeLocation: data[i]["EmployeeLocation"],
-              PickupLocation: data[i]["PickupLocation"],
-              PickupPerson: data[i]["PickupPerson"],
-              Division: data[i]["Division"],
-              Vendor: data[i]["Vendor"],
-              Phone: data[i]["Phone"],
-            })
-            .then((b) => {
-              swal("Success", "Success", "success");
+    if (e.target.files) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+          let data = e.target.result;
+          let workbook = XLSX.read(data, { type: "array" });
+          let sheetName = workbook.SheetNames[0];
+          let worksheet = workbook.Sheets[sheetName];
+          let json = XLSX.utils.sheet_to_json(worksheet);
+          console.log(json.length)
+          for (let i = 0; i < json.length; i++) {
+            if (
+              json[i]["Surname"] &&
+              json[i]["FirstName"] &&
+              json[i]["JobTitle"] &&
+              json[i]["Email"] &&
+              json[i]["EmployeeLocation"] &&
+              json[i]["PickupLocation"] &&
+              json[i]["PickupPerson"] &&
+              json[i]["Division"] &&
+              json[i]["Vendor"] &&
+              json[i]["Phone"] 
+              
+            ) {
+              console.log("sinsins")
+              sp.web.lists
+                .getByTitle("GiftBeneficiaries")
+                .items.add({
+                  Title: "",
+                  Surname: json[i]["Surname"],
+                  FirstName: json[i]["FirstName"],
+                  JobTitle: json[i]["JobTitle"],
+                  Email: json[i]["Email"],
+                  EmployeeLocation: json[i]["EmployeeLocation"],
+                  PickupLocation: json[i]["PickupLocation"],
+                  PickupPerson: json[i]["PickupPerson"],
+                  Division: json[i]["Division"],
+                  Vendor: json[i]["Vendor"],
+                  Phone: json[i]["Phone"],
+                })
+                .then((b) => {
+                  swal("Success", "Success", "success");
+                  setLoading(false);
+                  setTimeout(function () {
+                    history.push(`/admin/document`);
+                  }, 3000);
+                });
+            } else {
               setLoading(false);
-              setTimeout(function () {
-                history.push(`/admin/document`);
-              }, 3000);
-            });
-        } else {
-          setLoading(false);
-          console.log("uessss")
-          swal("Warning!", "Some Fields are required!", "warning");
+              console.log("uessss")
+              swal("Warning!", "Some Fields are required!", "warning");
+            }
+          }
+      };
+      reader.readAsArrayBuffer(e.target.files[0]);
+      
+    } else {
+      console.log("i dont understand")
+    }
+   
+}
+
+const singleUploadFile = (e) => {
+  e.preventDefault;
+  setLoading(true);
+  if (e.target.files) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        let data = e.target.result;
+        let workbook = XLSX.read(data, { type: "array" });
+        let sheetName = workbook.SheetNames[0];
+        let worksheet = workbook.Sheets[sheetName];
+        let json = XLSX.utils.sheet_to_json(worksheet);
+        console.log(json.length)
+        for (let i = 0; i < json.length; i++) {
+          if (
+            json[i]["Surname"] &&
+            json[i]["FirstName"] &&
+            json[i]["JobTitle"] &&
+            json[i]["Email"] &&
+            json[i]["EmployeeLocation"] &&
+            json[i]["PickupLocation"] &&
+            json[i]["PickupPerson"] &&
+            json[i]["Division"] &&
+            json[i]["Vendor"] &&
+            json[i]["Phone"] 
+            
+          ) {
+            console.log("sinsins")
+            sp.web.lists
+              .getByTitle("GiftBeneficiaries")
+              .items.add({
+                Title: "",
+                Surname: json[i]["Surname"],
+                FirstName: json[i]["FirstName"],
+                JobTitle: json[i]["JobTitle"],
+                Email: json[i]["Email"],
+                EmployeeLocation: json[i]["EmployeeLocation"],
+                PickupLocation: json[i]["PickupLocation"],
+                PickupPerson: json[i]["PickupPerson"],
+                Division: json[i]["Division"],
+                Vendor: json[i]["Vendor"],
+                Phone: json[i]["Phone"],
+              })
+              .then((b) => {
+                swal("Success", "Success", "success");
+                setLoading(false);
+                setTimeout(function () {
+                  history.push(`/admin/document`);
+                }, 3000);
+              });
+          } else {
+            setLoading(false);
+            console.log("uessss")
+            swal("Warning!", "Some Fields are required!", "warning");
+          }
         }
-      }
+    };
+    reader.readAsArrayBuffer(e.target.files[0]);
     
-    console.log("yessssss")
-  };
+  } else {
+    console.log("i dont understand")
+  }
+ 
 }
   return (
     <div className="appContainer">
@@ -155,8 +256,9 @@ const bulkUpload = (e) => {
 
             <div className={styles.uploadBtn}>
               <FileUpload
+              multiple={false}
                 title="single upload"
-                onChange={fileUpload}
+                onChange={singleUploadFile}
               />
             </div>
           </div>
@@ -166,11 +268,12 @@ const bulkUpload = (e) => {
             </div>
 
             <div className={styles.uploadBtn}>
-              {/* <FileUpload
+              <FileUpload
+              multiple={true}
                 title="bulk upload"
-                onChange={bulkUpload}
-              /> */}
-              <input type="file" onChange={bulkUpload} multiple/>
+                onChange={readUploadFile}
+              />
+              {/* <input type="file" onChange={readUploadFile} multiple/> */}
             </div>
           </div>
         </div>

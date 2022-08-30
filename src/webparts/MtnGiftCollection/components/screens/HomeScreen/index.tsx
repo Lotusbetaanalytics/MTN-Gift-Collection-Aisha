@@ -20,7 +20,7 @@ const HomeScreen = () => {
                 </div>
             </div>
             <div className={styles.btnContainer}>
-                <Link to={`/admin/document`} className="mtn__btn mtn__black">Proceed</Link>
+                <Link to={`/home`} className="mtn__btn mtn__black">Proceed</Link>
             </div>
         </div>
         </div>

@@ -76,12 +76,28 @@ const Roles = ({ context }) => {
   React.useEffect(() => {
     sp.profiles.myProperties.get().then((response) => {
       setEmployeeEmail(response.UserProfileProperties[19].Value);
+      const userEmail = (response.UserProfileProperties[19].Value)
+      sp.web.lists
+      .getByTitle("Admin")
+      .items.filter(`Role eq 'Admin' and Email eq '${userEmail}'`)
+      .get()
+      .then((response) => {
+       
+        if (response.length === 0) {
+          sweetAlert(
+            "Warning!",
+            "you are not authorize to use this portal",
+            "error"
+          );
+          history.push("/");
+        }
+    })
     });
   }, []);
 
   // Menubar Items
   const menu = [
-    { name: "Admin", url: "/admin/config" },
+    { name: "Admin", url: "/admin/config", active: true },
     { name: "Roles", url: "/admin/roles" },
     { name: "Location", url: "/admin/location" },
     { name: "Notification", url: "/admin/division" },
