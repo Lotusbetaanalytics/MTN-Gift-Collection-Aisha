@@ -19,7 +19,7 @@ const homescreen2 = () => {
     <div className='appContainer'>
         <div className='half'>
             <div className="left">
-            <div className='center_logo'><img src={require("../../assets/Vector.png")}></img></div>
+            <div className='center_logo'><img src="https://mtncloud.sharepoint.com/:i:/r/sites/MTNAppDevelopment/mtngiftcollectionsolution/Shared%20Documents/Vector.png?csf=1&web=1&e=JZV1D3" /></div>
             </div>
         </div>
         <div  className='hal'>
